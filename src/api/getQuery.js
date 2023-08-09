@@ -20,7 +20,6 @@ export  function getQuery(query, page=1, per_page) {
             return resp.json()
         
         })
-        // .catch(err => console.log(err))
        
     
 
