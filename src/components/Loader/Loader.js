@@ -1,4 +1,6 @@
-import { Rings } from  'react-loader-spinner'
+import { Rings } from 'react-loader-spinner'
+import { styled } from 'styled-components'
+
 
 
 <Rings
@@ -11,3 +13,13 @@ import { Rings } from  'react-loader-spinner'
   visible={true}
   ariaLabel="rings-loading"
 />
+
+export const Loader = styled.div`
+    position: absolute;
+    z-index: 1200;
+    left: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+`

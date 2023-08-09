@@ -14,11 +14,13 @@ export  function getQuery(query, page=1, per_page) {
     )
     return fetch(`${BASE_URL}?key=${API_KEY}&${params}`)
         .then(resp => {
+            console.log(resp);
             if (!resp.ok)
-                throw new Error(resp.status);
+                throw new Error('Something went wrong...');
             return resp.json()
-           
-         })
+        
+        })
+        // .catch(err => console.log(err))
        
     
 

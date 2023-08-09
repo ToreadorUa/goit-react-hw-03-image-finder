@@ -3,6 +3,8 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Searchbar } from './Searchbar/Searchbar';
 import { getQuery } from 'api/getQuery';
 import { Button } from './Button/Button';
+import { Appp, Message } from './App.styled';
+import { Loader } from './Loader/Loader';
 import { Rings } from 'react-loader-spinner';
 
 export class App extends Component {
@@ -14,6 +16,7 @@ export class App extends Component {
     per_page: 12,
     status: 'idle',
     error: '',
+    onMessage: false,
   };
   componentDidUpdate(_, prevState) {
     if (this.state.query !== prevState.query) {
@@ -26,20 +29,19 @@ export class App extends Component {
       this.setState({ status: 'pending' });
       getQuery(this.state.query, this.state.page, this.state.per_page)
         .then(data => {
-          console.log(data);
-          this.setState(
-            prev => ({
-              totalPages: Math.ceil(data.total / this.state.per_page),
-              dataArr: [...prev.dataArr, ...data.hits],
-              status: 'resolved',
-            }),
-            () => {
-              console.log(this.state.totalPages);
-            }
-          );
+          this.setState(prev => ({
+            totalPages: Math.ceil(data.total / this.state.per_page),
+            dataArr: [...prev.dataArr, ...data.hits],
+            status: 'resolved',
+            onMessage: !data.hits.length ? true : false,
+          }));
         })
         .catch(err => {
-          this.setState({ status: 'rejected', error: err });
+          this.setState({
+            status: 'rejected',
+            error: 'Something went wrong...',
+          });
+          console.log(err);
         });
     }
   }
@@ -54,20 +56,23 @@ export class App extends Component {
   render() {
     const { totalPages, page, dataArr } = this.state;
     const btnLoadMoreShow = (totalPages > 1) & (page !== totalPages);
-    // if (this.state.status === 'idle')
-    //   return <Searchbar onSubmit={this.onSubmit} />;
-    // if (this.state.status === 'pending') return <div>Загружаем...</div>;
-    // if (this.state.status === 'resolved')
     return (
-      <>
-        {this.state.status === 'pending' && <Rings />}
+      <Appp>
+        {this.state.onMessage && (
+          <Message>There is found nothing, try again!</Message>
+        )}
+        {this.state.status === 'pending' && (
+          <Loader>
+            <Rings />
+          </Loader>
+        )}
         <Searchbar onSubmit={this.onSubmit} />
         <ImageGallery dataArr={dataArr} />
         {btnLoadMoreShow ? (
           <Button btnLoadMoreClick={this.btnLoadMoreClick} />
         ) : null}
-      </>
+        {this.state.status === 'rejected' && <h1>{this.state.error}</h1>}
+      </Appp>
     );
-    if (this.state.status === 'rejected') return <h1>{this.state.error}</h1>;
   }
 }
