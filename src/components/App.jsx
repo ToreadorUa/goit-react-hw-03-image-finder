@@ -3,6 +3,7 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Searchbar } from './Searchbar/Searchbar';
 import { getQuery } from 'api/getQuery';
 import { Button } from './Button/Button';
+import { Rings } from 'react-loader-spinner';
 
 export class App extends Component {
   state = {
@@ -15,6 +16,9 @@ export class App extends Component {
     error: '',
   };
   componentDidUpdate(_, prevState) {
+    if (this.state.query !== prevState.query) {
+      this.setState({ page: 1, dataArr: [] });
+    }
     if (
       this.state.page !== prevState.page ||
       this.state.query !== prevState.query
@@ -23,7 +27,6 @@ export class App extends Component {
       getQuery(this.state.query, this.state.page, this.state.per_page)
         .then(data => {
           console.log(data);
-
           this.setState(
             prev => ({
               totalPages: Math.ceil(data.total / this.state.per_page),
@@ -57,6 +60,7 @@ export class App extends Component {
     // if (this.state.status === 'resolved')
     return (
       <>
+        {this.state.status === 'pending' && <Rings />}
         <Searchbar onSubmit={this.onSubmit} />
         <ImageGallery dataArr={dataArr} />
         {btnLoadMoreShow ? (

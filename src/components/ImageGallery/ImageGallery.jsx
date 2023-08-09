@@ -3,9 +3,12 @@ import React from 'react';
 
 export const ImageGallery = ({ dataArr }) => (
   <ul className="gallery">
-    {dataArr.map(({ id, webformatURL }) => (
+    {dataArr.map(({ id, webformatURL, largeImageURL }) => (
       <React.Fragment key={id}>
-        <ImageGalleryItem webformatURL={webformatURL} />
+        <ImageGalleryItem
+          webformatURL={webformatURL}
+          largeImageURL={largeImageURL}
+        />
       </React.Fragment>
     ))}
   </ul>
